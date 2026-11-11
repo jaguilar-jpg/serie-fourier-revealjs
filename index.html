@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Serie de Fourier</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="reveal/dist/reset.css">
+  <link rel="stylesheet" href="reveal/dist/reveal.css">
+  <link rel="stylesheet" href="reveal/dist/theme/black.css">
+  <link rel="stylesheet" href="lib/katex/katex.min.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- Diapositiva 1: portada -->
+      <section>
+        <h2>Serie de Fourier</h2>
+        <p>Señales y Sistemas &middot; UNSA</p>
+        <p style="font-size:0.6em; color:#aaa">Integrantes: (escribe aquí los nombres del grupo)</p>
+      </section>
+
+      <!-- Diapositiva 2: las tres formas de la serie -->
+      <section>
+        <h3>Serie de Fourier: tres formas equivalentes</h3>
+        <p style="font-size:0.6em">
+          Una señal periódica x(t) de periodo T<sub>0</sub> (con f<sub>0</sub> = 1/T<sub>0</sub>)
+          se escribe como una suma de sinusoides de frecuencias n&middot;f<sub>0</sub>:
+        </p>
+        <div style="font-size:0.62em">
+          <p class="fragment"><b>Trigonométrica</b>
+            $$x(t)=a_0+\sum_{n=1}^{\infty}\Big[a_n\cos(2\pi n f_0 t)+b_n\sin(2\pi n f_0 t)\Big]$$</p>
+          <p class="fragment"><b>Compacta</b>
+            $$x(t)=A_0+\sum_{n=1}^{\infty}A_n\cos(2\pi n f_0 t+\phi_n)$$</p>
+          <p class="fragment"><b>Exponencial compleja</b>
+            $$x(t)=\sum_{n=-\infty}^{\infty}c_n\,e^{j2\pi n f_0 t}$$</p>
+        </div>
+      </section>
+
+      <!-- Diapositiva 3: cómo se calculan los coeficientes -->
+      <section>
+        <h3>Coeficientes de la serie exponencial</h3>
+        <div style="font-size:0.65em">
+          $$c_n=\frac{1}{T_0}\int_{T_0}x(t)\,e^{-j2\pi n f_0 t}\,dt$$
+          <ul>
+            <li class="fragment"><b>c<sub>0</sub></b>: valor medio de la señal (componente continua).</li>
+            <li class="fragment"><b>|c<sub>n</sub>|</b>: amplitud del armónico n. <b>&ang;c<sub>n</sub></b>: su fase.</li>
+            <li class="fragment">Si x(t) es real: $c_{-n}=c_n^{*}$, por eso el espectro es simétrico.</li>
+          </ul>
+          <p class="fragment">Relación con las otras formas (n &ge; 1):
+            $$c_n=\frac{a_n-jb_n}{2}=\frac{A_n}{2}\,e^{j\phi_n}$$</p>
+        </div>
+      </section>
+
+      <!-- Diapositiva 4: suma de armónicos (onda cuadrada) -->
+      <section>
+        <h3>Sumando armónicos: la onda cuadrada</h3>
+        <p style="font-size:0.7em">Mueve el deslizador: <b id="textoN">N = 1</b> armónicos</p>
+        <input id="deslizador" type="range" min="1" max="31" step="2" value="1" style="width:60%">
+        <div style="height:380px">
+          <canvas id="grafica"></canvas>
+        </div>
+      </section>
+
+      <!-- Diapositiva 5: tren de pulsos rectangulares y su espectro -->
+      <section id="diapo-pulso">
+        <style>
+          #diapo-pulso h3 { margin: 0 0 4px 0; }
+          #diapo-pulso .p-formula { font-size: 0.62em; margin: 0; }
+          #diapo-pulso .p-controles {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 18px; font-size: 0.45em; margin: 6px 0 4px 0;
+          }
+          #diapo-pulso .p-controles input { width: 100%; }
+          #diapo-pulso .p-graficas {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+          }
+          #diapo-pulso .p-graficas > div { height: 330px; position: relative; }
+          #diapo-pulso .p-info { font-size: 0.45em; color: #9ad; margin: 6px 0 0 0; }
+          #diapo-pulso .p-notas { font-size: 0.45em; margin: 4px 0 0 0; }
+        </style>
+
+        <h3>Tren de pulsos rectangulares</h3>
+        <p class="p-formula">$$C_n=\frac{A\,\tau}{T_0}\,\mathrm{sinc}(n f_0 \tau),\qquad f_0=\frac{1}{T_0}$$</p>
+
+        <div class="p-controles">
+          <label>Amplitud A = <b id="p_A_txt">3</b>
+            <input id="p_A" type="range" min="1" max="5" step="0.5" value="3"></label>
+          <label>Ancho &tau; = <b id="p_tau_txt">1</b> s
+            <input id="p_tau" type="range" min="0.5" max="6" step="0.5" value="1"></label>
+          <label>Periodo T<sub>0</sub> = <b id="p_T0_txt">4</b> s
+            <input id="p_T0" type="range" min="2" max="10" step="0.5" value="4"></label>
+          <label>Armónicos N = <b id="p_N_txt">7</b>
+            <input id="p_N" type="range" min="1" max="60" step="1" value="7"></label>
+        </div>
+
+        <div class="p-graficas">
+          <div><canvas id="p_tiempo"></canvas></div>
+          <div><canvas id="p_espectro"></canvas></div>
+        </div>
+
+        <p class="p-info" id="p_info"></p>
+        <p class="p-notas fragment">
+          Sube T<sub>0</sub>: las líneas se juntan (f<sub>0</sub> baja).
+          Baja &tau;: la envolvente sinc se ensancha.
+          Sube N: la suma (azul) copia mejor al pulso (gris).
+        </p>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="lib/chart.umd.js"></script>
+  <script src="reveal/dist/reveal.js"></script>
+  <script src="reveal/dist/plugin/math.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      width: 1100,
+      height: 700,
+      plugins: [ RevealMath.KaTeX ],
+      katex: { local: 'lib/katex' }
+    });
+
+    // --- Diapositiva 4: onda cuadrada armada con senos ---
+    const puntos = 400;
+    const tiempos = [];
+    for (let i = 0; i < puntos; i++) {
+      tiempos.push(-2 + 4 * i / (puntos - 1));
+    }
+
+    function sumaArmonicos(N) {
+      return tiempos.map(t => {
+        let s = 0;
+        for (let k = 1; k <= N; k += 2) {
+          s += Math.sin(k * Math.PI * t) / k;
+        }
+        return (4 / Math.PI) * s;
+      });
+    }
+
+    const grafica = new Chart(document.getElementById('grafica'), {
+      type: 'line',
+      data: {
+        labels: tiempos.map(t => t.toFixed(2)),
+        datasets: [{
+          label: 'Suma de armónicos',
+          data: sumaArmonicos(1),
+          borderColor: '#42affa',
+          borderWidth: 2,
+          pointRadius: 0
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        animation: false,
+        scales: {
+          x: { ticks: { maxTicksLimit: 9, color: '#ccc' } },
+          y: { min: -1.5, max: 1.5, ticks: { color: '#ccc' } }
+        },
+        plugins: { legend: { labels: { color: '#ccc' } } }
+      }
+    });
+
+    document.getElementById('deslizador').addEventListener('input', e => {
+      const N = parseInt(e.target.value);
+      document.getElementById('textoN').textContent = 'N = ' + N;
+      grafica.data.datasets[0].data = sumaArmonicos(N);
+      grafica.update();
+    });
+  </script>
+
+  <!-- Diapositiva 5 (debe ir DESPUÉS del Reveal.initialize de arriba) -->
+  <script src="js/pulso.js"></script>
+</body>
+</html>
