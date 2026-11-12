@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Serie de Fourier</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="reveal/dist/reset.css">
+  <link rel="stylesheet" href="reveal/dist/reveal.css">
+  <link rel="stylesheet" href="reveal/dist/theme/black.css">
+  <link rel="stylesheet" href="lib/katex/katex.min.css">
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 1. Portada -->
+      <section>
+        <div class="portada"><h1>Serie de Fourier</h1></div>
+      </section>
+
+      <!-- 2. La idea de fondo -->
+      <section id="diapo-idea">
+        <h3>La idea de fondo</h3>
+        <p class="texto-chico">Una señal que se repite se puede armar sumando ondas simples.
+          Aquí, una onda cuadrada se forma sumando senos, uno por uno.</p>
+        <div class="controles1">
+          <label>Senos sumados: <b id="idea_txt">N = 1</b>
+            <input id="idea_N" type="range" min="1" max="31" step="2" value="1"></label>
+        </div>
+        <div class="caja-grafica" style="height:400px"><canvas id="idea_grafica"></canvas></div>
+        <p class="texto-chico">Cada seno nuevo (línea naranja) es
+          $\dfrac{4}{\pi k}\sin(k\pi t)$, con $k=1,3,5,\dots$</p>
+      </section>
+
+      <!-- 3. Tres formas de la serie -->
+      <section>
+        <h3>Tres formas de escribir la serie</h3>
+        <p class="texto-chico">
+          Una señal periódica $x(t)$ de periodo $T_0$, con $f_0=1/T_0$,
+          se arma con ondas de frecuencia $k f_0$.
+        </p>
+        <div class="formulas-chicas">
+          <div class="fragment"><b>Con senos y cosenos</b>
+            $$x(t)=a_0+\sum_{k=1}^{\infty}\Big[a_k\cos(2\pi k f_0 t)+b_k\sin(2\pi k f_0 t)\Big]$$</div>
+          <div class="fragment"><b>Con amplitud y fase</b>
+            $$x(t)=A_0+\sum_{k=1}^{\infty}A_k\cos(2\pi k f_0 t+\phi_k)$$</div>
+          <div class="fragment"><b>Con exponenciales</b>
+            $$x(t)=\sum_{k=-\infty}^{\infty}c_k\,e^{j2\pi k f_0 t}$$</div>
+        </div>
+      </section>
+
+      <!-- 4. Coeficientes -->
+      <section>
+        <h3>¿Cómo se calcula $c_k$?</h3>
+        <div class="formulas-chicas">
+          $$c_k=\frac{1}{T_0}\int_{T_0}x(t)\,e^{-j2\pi k f_0 t}\,dt$$
+          <ul>
+            <li class="fragment">Se integra en un solo periodo de la señal.</li>
+            <li class="fragment">$c_0$ es el promedio de la señal.</li>
+            <li class="fragment">El tamaño de $c_k$ dice cuánto hay de la onda número $k$, y su ángulo dice cuánto está corrida.</li>
+            <li class="fragment">Si $x(t)$ es real, $c_{-k}$ es el conjugado de $c_k$: $c_{-k}=c_k^{*}$. Por eso el espectro es simétrico.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 5. Ejemplo: planteo -->
+      <section>
+        <h3>Ejemplo: cosenos y senos</h3>
+        <p class="texto-chico">Queremos escribir esta señal con exponenciales:</p>
+        <div class="formulas-chicas">
+          $$x(t)=3+2\cos(4\pi t)+3\cos(6\pi t)+2\sin(2\pi t)$$
+        </div>
+        <p class="texto-chico fragment">Para cambiar cada onda usamos estas dos igualdades:</p>
+        <div class="formulas-chicas fragment">
+          $$\cos\theta=\frac{e^{j\theta}+e^{-j\theta}}{2}\qquad\qquad \sin\theta=\frac{e^{j\theta}-e^{-j\theta}}{2j}$$
+        </div>
+      </section>
+
+      <!-- 6. Ejemplo: reemplazo -->
+      <section>
+        <h3>Cambiamos cada onda</h3>
+        <div class="formulas-chicas">
+          <div class="fragment">$$2\cos(4\pi t)=e^{j4\pi t}+e^{-j4\pi t}$$</div>
+          <div class="fragment">$$3\cos(6\pi t)=\tfrac{3}{2}\,e^{j6\pi t}+\tfrac{3}{2}\,e^{-j6\pi t}$$</div>
+          <div class="fragment">$$2\sin(2\pi t)=\frac{e^{j2\pi t}-e^{-j2\pi t}}{j}=-j\,e^{j2\pi t}+j\,e^{-j2\pi t}$$</div>
+        </div>
+        <p class="texto-chico fragment">(En el seno usamos que $\tfrac{1}{j}=-j$.)</p>
+      </section>
+
+      <!-- 7. Ejemplo: coeficientes -->
+      <section>
+        <h3>Leemos los coeficientes</h3>
+        <p class="texto-chico">Aquí $f_0=1$ Hz. Cada exponencial tiene la forma $c_k\,e^{j2\pi k t}$,
+          así que solo hay que leer el número que la acompaña:</p>
+        <div class="formulas-chicas">
+          $$x(t)=3+\underbrace{(-j)}_{c_1}e^{j2\pi(1)t}+\underbrace{(j)}_{c_{-1}}e^{-j2\pi(1)t}+\dots$$
+          <div class="fragment">
+            $$c_0=3,\quad c_{1}=-j,\quad c_{-1}=j,\quad c_{2}=c_{-2}=1,\quad c_{3}=c_{-3}=\tfrac{3}{2}$$
+          </div>
+          <p class="texto-chico fragment">Comprobación: $c_{-1}=j$ es el conjugado de $c_1=-j$ &check;</p>
+        </div>
+      </section>
+
+      <!-- 8. Espectro de líneas -->
+      <section id="diapo-espectro">
+        <h3>El espectro de líneas</h3>
+        <p class="texto-chico">Las barras son los $c_k$ del ejemplo. Quita o pon componentes y mira cómo cambia la señal.</p>
+        <div class="rejilla-espectro">
+          <div class="col-espectro">
+            <div class="caja-grafica" style="height:215px"><canvas id="esp_mag"></canvas></div>
+            <div class="caja-grafica" style="height:215px"><canvas id="esp_fase"></canvas></div>
+          </div>
+          <div class="col-tiempo">
+            <div class="controles-check">
+              <label><input type="checkbox" data-k="0" checked> Promedio ($k=0$)</label>
+              <label><input type="checkbox" data-k="1" checked> $k=\pm1$</label>
+              <label><input type="checkbox" data-k="2" checked> $k=\pm2$</label>
+              <label><input type="checkbox" data-k="3" checked> $k=\pm3$</label>
+            </div>
+            <div class="caja-grafica" style="height:400px"><canvas id="esp_tiempo"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. Onda cuadrada y Gibbs -->
+      <section id="diapo-gibbs">
+        <h3>Onda cuadrada: más senos, ¿mejor?</h3>
+        <p class="texto-chico">Cerca de cada salto aparece una &ldquo;oreja&rdquo;. Sube $N$ y mira qué le pasa.</p>
+        <div class="controles1">
+          <label>Senos sumados: <b id="gibbs_txt">N = 15</b>
+            <input id="gibbs_N" type="range" min="1" max="201" step="2" value="15"></label>
+        </div>
+        <div class="caja-grafica" style="height:380px"><canvas id="gibbs_grafica"></canvas></div>
+        <p class="texto-chico">Valor más alto de la suma: <b id="gibbs_max">-</b>
+          (la onda cuadrada llega a 1). La oreja se hace más angosta, pero no desaparece:
+          sigue sobrando cerca de un 9&nbsp;%.</p>
+      </section>
+
+      <!-- 10. Pulso rectangular: planteo -->
+      <section>
+        <h3>Ejemplo: tren de pulsos</h3>
+        <p class="texto-chico">Un pulso de altura $A$ y ancho $\tau$ que se repite cada $T_0$:</p>
+        <svg class="dibujo" viewBox="0 0 480 190" width="720" height="285" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#ddd" stroke-width="2" fill="none">
+            <line x1="5" y1="130" x2="475" y2="130"/>
+            <line x1="240" y1="20" x2="240" y2="140" stroke-dasharray="4 4" stroke="#777"/>
+          </g>
+          <g fill="#42affa" fill-opacity="0.35" stroke="#42affa" stroke-width="2">
+            <rect x="0" y="50" width="80" height="80"/>
+            <rect x="200" y="50" width="80" height="80"/>
+            <rect x="400" y="50" width="80" height="80"/>
+          </g>
+          <g fill="#ddd" font-size="17" font-family="sans-serif" text-anchor="middle">
+            <text x="240" y="42">A</text>
+            <text x="200" y="152">-τ/2</text>
+            <text x="280" y="152">τ/2</text>
+            <text x="240" y="152" fill="#9ad">0</text>
+            <text x="340" y="178" fill="#ff9f40">T0</text>
+          </g>
+          <g stroke="#ff9f40" stroke-width="2" fill="none">
+            <line x1="240" y1="162" x2="440" y2="162"/>
+          </g>
+        </svg>
+        <div class="formulas-chicas">
+          $$c_k=\frac{1}{T_0}\int_{-\tau/2}^{\tau/2}A\,e^{-j2\pi k f_0 t}\,dt$$
+        </div>
+        <p class="texto-chico fragment">Al final aparecerá la función $\mathrm{sinc}(x)=\dfrac{\sin(\pi x)}{\pi x}$.</p>
+      </section>
+
+      <!-- 11. Pulso rectangular: resolución -->
+      <section>
+        <h3>Resolvemos la integral</h3>
+        <div class="formulas-chicas">
+          <div class="fragment">$$c_k=\frac{A}{T_0}\left[\frac{e^{-j2\pi k f_0 t}}{-j2\pi k f_0}\right]_{-\tau/2}^{\tau/2}$$</div>
+          <div class="fragment">$$c_k=\frac{A}{T_0\,\pi k f_0}\cdot\frac{e^{j\pi k f_0\tau}-e^{-j\pi k f_0\tau}}{2j}$$</div>
+          <div class="fragment">$$c_k=\frac{A}{T_0\,\pi k f_0}\,\sin(\pi k f_0\tau)$$</div>
+          <div class="fragment">$$c_k=\frac{A\tau}{T_0}\cdot\frac{\sin(\pi k f_0\tau)}{\pi k f_0\tau}=\frac{A\tau}{T_0}\,\mathrm{sinc}(k f_0\tau)$$</div>
+        </div>
+      </section>
+
+      <!-- 12. Tren de pulsos interactivo -->
+      <section id="diapo-tren">
+        <h3>Tren de pulsos: muévelo tú</h3>
+        <div class="formulas-chicas" style="margin:0">
+          $$c_k=\frac{A\,\tau}{T_0}\,\mathrm{sinc}(k f_0 \tau),\qquad f_0=\frac{1}{T_0}$$
+        </div>
+        <div class="controles4">
+          <label>Altura $A$ = <b id="p_A_txt">3</b>
+            <input id="p_A" type="range" min="1" max="5" step="0.5" value="3"></label>
+          <label>Ancho $\tau$ = <b id="p_tau_txt">1</b> s
+            <input id="p_tau" type="range" min="0.5" max="4" step="0.5" value="1"></label>
+          <label>Periodo $T_0$ = <b id="p_T0_txt">4</b> s
+            <input id="p_T0" type="range" min="2" max="10" step="0.5" value="4"></label>
+          <label>Senos y cosenos $N$ = <b id="p_N_txt">7</b>
+            <input id="p_N" type="range" min="1" max="60" step="1" value="7"></label>
+        </div>
+        <div class="rejilla2">
+          <div class="caja-grafica" style="height:320px"><canvas id="p_tiempo"></canvas></div>
+          <div class="caja-grafica" style="height:320px"><canvas id="p_espectro"></canvas></div>
+        </div>
+        <p class="texto-chico" id="p_info"></p>
+        <p class="texto-chico fragment">
+          Sube $T_0$: las líneas se juntan. Baja $\tau$: el dibujo de las líneas se ensancha.
+          Sube $N$: la suma (azul) copia mejor al pulso (gris).
+        </p>
+      </section>
+
+      <!-- 13. Pulso desplazado -->
+      <section id="diapo-desplazado">
+        <h3>Si movemos el pulso</h3>
+        <div class="formulas-chicas" style="margin:0">
+          $$c_k=\frac{A\tau}{T_0}\,\mathrm{sinc}(k f_0 \tau)\;e^{-j2\pi k f_0\,(\text{centro del pulso})}$$
+        </div>
+        <div class="controles1">
+          <label>El pulso empieza en $t=$ <b id="d_txt">0</b> s
+            <input id="d_in" type="range" min="-1" max="2" step="0.25" value="0"></label>
+        </div>
+        <div class="rejilla-espectro">
+          <div class="caja-grafica" style="height:420px"><canvas id="d_tiempo"></canvas></div>
+          <div class="col-espectro">
+            <div class="caja-grafica" style="height:205px"><canvas id="d_mag"></canvas></div>
+            <div class="caja-grafica" style="height:205px"><canvas id="d_fase"></canvas></div>
+          </div>
+        </div>
+        <p class="texto-chico">Aquí $A=1$, $\tau=2$ s y $T_0=4$ s. Las alturas (arriba) no cambian: moverlo solo cambia la fase (abajo).</p>
+      </section>
+
+      <!-- 14. Fasores giratorios -->
+      <section id="diapo-fasores">
+        <h3>Ondas que giran</h3>
+        <p class="texto-chico">Un seno es la altura de algo que gira en círculo. Cada círculo gira $k$ veces más rápido,
+          y la punta de la cadena dibuja la onda.</p>
+        <div class="controles1">
+          <label>Círculos: <b id="f_txt">N = 5</b>
+            <input id="f_N" type="range" min="1" max="31" step="2" value="5"></label>
+          <button id="f_boton" class="boton">Pausar</button>
+        </div>
+        <canvas id="f_canvas" class="lienzo"></canvas>
+      </section>
+
+      <!-- 15. Puente a la transformada -->
+      <section id="diapo-puente">
+        <h3>Un puente hacia la transformada</h3>
+        <p class="texto-chico">Mantén el pulso igual y haz crecer el periodo $T_0$.</p>
+        <div class="controles1">
+          <label>Periodo $T_0$ = <b id="b_txt">4</b> s
+            <input id="b_T0" type="range" min="2" max="40" step="1" value="4"></label>
+        </div>
+        <div class="rejilla2">
+          <div class="caja-grafica" style="height:300px"><canvas id="b_tiempo"></canvas></div>
+          <div class="caja-grafica" style="height:300px"><canvas id="b_espectro"></canvas></div>
+        </div>
+        <p class="texto-chico fragment">Con $T_0$ muy grande queda un solo pulso, y las líneas se pegan hasta formar una curva continua.
+          Esa curva es la transformada de Fourier:</p>
+        <div class="formulas-chicas fragment">
+          $$X(f)=\int_{-\infty}^{\infty}x(t)\,e^{-j2\pi f t}\,dt$$
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="lib/chart.umd.js"></script>
+  <script src="reveal/dist/reveal.js"></script>
+  <script src="reveal/dist/plugin/math.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      width: 1100,
+      height: 700,
+      center: false,          // evita que el texto quede en medio píxel (se ve borroso)
+      transition: 'fade',     // el deslizamiento 3D también borronea el texto
+      plugins: [ RevealMath.KaTeX ],
+      katex: { local: 'lib/katex' }
+    });
+
+    // Gráficas nítidas: se pintan con 3 veces más detalle
+    Chart.defaults.devicePixelRatio = 3;
+    Chart.defaults.color = '#ccc';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.15)';
+    Chart.defaults.font.size = 15;
+  </script>
+
+  <!-- Estos van DESPUÉS del bloque de arriba -->
+  <script src="js/comun.js"></script>
+  <script src="js/idea.js"></script>
+  <script src="js/espectro.js"></script>
+  <script src="js/gibbs.js"></script>
+  <script src="js/tren_pulsos.js"></script>
+  <script src="js/desplazado.js"></script>
+  <script src="js/fasores.js"></script>
+  <script src="js/puente.js"></script>
+</body>
+</html>

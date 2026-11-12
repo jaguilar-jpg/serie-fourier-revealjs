@@ -1,0 +1,19 @@
+SERIE DE FOURIER - presentacion reveal.js (diapositivas 1 a 10)
+
+COMO USAR
+1. Descomprime este ZIP DENTRO de tu carpeta serie-fourier-revealjs
+   (la que ya tiene las carpetas "reveal" y "lib").
+2. Si Windows pregunta si quieres reemplazar index.html, di que SI.
+3. Abre index.html con doble clic.
+
+CARPETAS NUEVAS (ya no se usan las viejas "css" y "js"):
+   estilos/   -> estilo.css
+   scripts/   -> comun.js, suma-armonicos.js, problemas.js, tren-pulsos.js, cosenos.js
+
+Tu carpeta debe quedar asi:
+   serie-fourier-revealjs/
+     index.html
+     estilos/
+     scripts/
+     reveal/
+     lib/

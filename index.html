@@ -9,80 +9,119 @@
   <link rel="stylesheet" href="reveal/dist/reveal.css">
   <link rel="stylesheet" href="reveal/dist/theme/black.css">
   <link rel="stylesheet" href="lib/katex/katex.min.css">
+  <link rel="stylesheet" href="estilos/estilo.css">
 </head>
 <body>
   <div class="reveal">
     <div class="slides">
 
-      <!-- Diapositiva 1: portada -->
+      <!-- 1. Portada -->
       <section>
-        <h2>Serie de Fourier</h2>
-        <p>Señales y Sistemas &middot; UNSA</p>
-        <p style="font-size:0.6em; color:#aaa">Integrantes: (escribe aquí los nombres del grupo)</p>
+        <h1 style="font-size:1.9em">Serie de Fourier</h1>
+        <p style="font-size:0.6em; color:#aaa">(Coeficientes, sinc, rampas y espectro de líneas)</p>
       </section>
 
-      <!-- Diapositiva 2: las tres formas de la serie -->
+      <!-- 2. Las tres formas de la serie -->
       <section>
         <h3>Serie de Fourier: tres formas equivalentes</h3>
         <p style="font-size:0.6em">
           Una señal periódica x(t) de periodo T<sub>0</sub> (con f<sub>0</sub> = 1/T<sub>0</sub>)
-          se escribe como una suma de sinusoides de frecuencias n&middot;f<sub>0</sub>:
+          se escribe como una suma de ondas simples de frecuencias k&middot;f<sub>0</sub>:
         </p>
         <div style="font-size:0.62em">
           <p class="fragment"><b>Trigonométrica</b>
-            $$x(t)=a_0+\sum_{n=1}^{\infty}\Big[a_n\cos(2\pi n f_0 t)+b_n\sin(2\pi n f_0 t)\Big]$$</p>
+            $$x(t)=a_0+\sum_{k=1}^{\infty}\Big[a_k\cos(2\pi k f_0 t)+b_k\sin(2\pi k f_0 t)\Big]$$</p>
           <p class="fragment"><b>Compacta</b>
-            $$x(t)=A_0+\sum_{n=1}^{\infty}A_n\cos(2\pi n f_0 t+\phi_n)$$</p>
+            $$x(t)=A_0+\sum_{k=1}^{\infty}A_k\cos(2\pi k f_0 t+\phi_k)$$</p>
           <p class="fragment"><b>Exponencial compleja</b>
-            $$x(t)=\sum_{n=-\infty}^{\infty}c_n\,e^{j2\pi n f_0 t}$$</p>
+            $$x(t)=\sum_{k=-\infty}^{\infty}c_k\,e^{j2\pi k f_0 t}$$</p>
         </div>
       </section>
 
-      <!-- Diapositiva 3: cómo se calculan los coeficientes -->
+      <!-- 3. Cómo se calculan los coeficientes -->
       <section>
         <h3>Coeficientes de la serie exponencial</h3>
         <div style="font-size:0.65em">
-          $$c_n=\frac{1}{T_0}\int_{T_0}x(t)\,e^{-j2\pi n f_0 t}\,dt$$
+          $$c_k=\frac{1}{T_0}\int_{T_0}x(t)\,e^{-j2\pi k f_0 t}\,dt$$
           <ul>
-            <li class="fragment"><b>c<sub>0</sub></b>: valor medio de la señal (componente continua).</li>
-            <li class="fragment"><b>|c<sub>n</sub>|</b>: amplitud del armónico n. <b>&ang;c<sub>n</sub></b>: su fase.</li>
-            <li class="fragment">Si x(t) es real: $c_{-n}=c_n^{*}$, por eso el espectro es simétrico.</li>
+            <li class="fragment"><b>c<sub>0</sub></b>: el valor medio de la señal.</li>
+            <li class="fragment"><b>|c<sub>k</sub>|</b>: cuánta amplitud tiene el armónico k.</li>
+            <li class="fragment">Si x(t) es real: $c_{-k}=c_k^{*}$, por eso el espectro es simétrico.</li>
           </ul>
-          <p class="fragment">Relación con las otras formas (n &ge; 1):
-            $$c_n=\frac{a_n-jb_n}{2}=\frac{A_n}{2}\,e^{j\phi_n}$$</p>
         </div>
       </section>
 
-      <!-- Diapositiva 4: suma de armónicos (onda cuadrada) -->
+      <!-- 4. Suma de armónicos (onda cuadrada) -->
       <section>
         <h3>Sumando armónicos: la onda cuadrada</h3>
-        <p style="font-size:0.7em">Mueve el deslizador: <b id="textoN">N = 1</b> armónicos</p>
-        <input id="deslizador" type="range" min="1" max="31" step="2" value="1" style="width:60%">
-        <div style="height:380px">
-          <canvas id="grafica"></canvas>
+        <p style="font-size:0.7em">Mueve el deslizador: <b id="suma_N_txt">N = 1</b> armónicos</p>
+        <input id="suma_N" type="range" min="1" max="31" step="2" value="1" style="width:60%">
+        <div class="caja-grafica alta">
+          <canvas id="suma_graf"></canvas>
         </div>
       </section>
 
-      <!-- Diapositiva 5: tren de pulsos rectangulares y su espectro -->
-      <section id="diapo-pulso">
-        <style>
-          #diapo-pulso h3 { margin: 0 0 4px 0; }
-          #diapo-pulso .p-formula { font-size: 0.62em; margin: 0; }
-          #diapo-pulso .p-controles {
-            display: grid; grid-template-columns: repeat(4, 1fr);
-            gap: 18px; font-size: 0.45em; margin: 6px 0 4px 0;
-          }
-          #diapo-pulso .p-controles input { width: 100%; }
-          #diapo-pulso .p-graficas {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
-          }
-          #diapo-pulso .p-graficas > div { height: 330px; position: relative; }
-          #diapo-pulso .p-info { font-size: 0.45em; color: #9ad; margin: 6px 0 0 0; }
-          #diapo-pulso .p-notas { font-size: 0.45em; margin: 4px 0 0 0; }
-        </style>
+      <!-- 5. Problema 1: pulso centrado -->
+      <section>
+        <h3>Problema 1: pulso centrado</h3>
+        <p style="font-size:0.55em">Pulso de altura 2, desde $t=-1$ hasta $t=1$, repetido cada $T_0$.</p>
+        <div class="dos-col">
+          <div style="font-size:0.5em">
+            <div class="fragment">
+              <p class="paso">Planteamos la integral, solo donde el pulso vale 2.</p>
+              $$c_k=\frac{1}{T_0}\int_{-1}^{1}2\,e^{-j2\pi k f_0 t}\,dt$$
+            </div>
+            <div class="fragment">
+              <p class="paso">Sacamos el 2 e integramos la exponencial.</p>
+              $$c_k=\frac{2}{T_0}\left[\frac{e^{-j2\pi k f_0 t}}{-j2\pi k f_0}\right]_{-1}^{1}$$
+            </div>
+            <div class="fragment">
+              <p class="paso">Evaluamos en los extremos: aparece un seno.</p>
+              $$c_k=\frac{2}{T_0\,\pi k f_0}\cdot\frac{e^{j2\pi k f_0}-e^{-j2\pi k f_0}}{2j}$$
+            </div>
+            <div class="fragment">
+              $$c_k=\frac{2}{T_0\,\pi k f_0}\,\sin(2\pi k f_0)$$
+            </div>
+            <div class="fragment">
+              <p class="paso">Lo escribimos con sinc:</p>
+              $$\boxed{c_k=\frac{4}{T_0}\,\mathrm{sinc}(2kf_0)}$$
+            </div>
+          </div>
+          <div>
+            <div class="control">Periodo T<sub>0</sub> = <b id="p1_T0_txt">4</b> s
+              <input id="p1_T0" type="range" min="2.5" max="10" step="0.5" value="4"></div>
+            <div class="caja-grafica"><canvas id="p1_graf"></canvas></div>
+            <p class="nota" id="p1_info"></p>
+          </div>
+        </div>
+      </section>
 
+      <!-- 6. Pulso general y la función sinc -->
+      <section>
+        <h3>Pulso general y la función sinc</h3>
+        <div class="dos-col">
+          <div style="font-size:0.55em">
+            <p>Con altura $A$ y ancho $\tau$, centrado en cero:</p>
+            $$C_k=\frac{A\,\tau}{T_0}\,\mathrm{sinc}(k f_0 \tau)$$
+            <p>La función sinc se define así:</p>
+            $$\mathrm{sinc}(x)=\frac{\sin(\pi x)}{\pi x}$$
+            <ul>
+              <li class="fragment">Vale 1 cuando $x=0$.</li>
+              <li class="fragment">Cruza por cero en cada número entero.</li>
+              <li class="fragment">El Problema 1 es el caso $A=2$ y $\tau=2$.</li>
+            </ul>
+          </div>
+          <div>
+            <div class="caja-grafica"><canvas id="g6_sinc"></canvas></div>
+            <p class="nota">Gráfica de sinc(x)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Tren de pulsos interactivo -->
+      <section>
         <h3>Tren de pulsos rectangulares</h3>
-        <p class="p-formula">$$C_n=\frac{A\,\tau}{T_0}\,\mathrm{sinc}(n f_0 \tau),\qquad f_0=\frac{1}{T_0}$$</p>
+        <p class="p-formula">$$C_k=\frac{A\,\tau}{T_0}\,\mathrm{sinc}(k f_0 \tau),\qquad f_0=\frac{1}{T_0}$$</p>
 
         <div class="p-controles">
           <label>Amplitud A = <b id="p_A_txt">3</b>
@@ -96,8 +135,8 @@
         </div>
 
         <div class="p-graficas">
-          <div><canvas id="p_tiempo"></canvas></div>
-          <div><canvas id="p_espectro"></canvas></div>
+          <div class="caja-grafica"><canvas id="p_tiempo"></canvas></div>
+          <div class="caja-grafica"><canvas id="p_espectro"></canvas></div>
         </div>
 
         <p class="p-info" id="p_info"></p>
@@ -106,6 +145,103 @@
           Baja &tau;: la envolvente sinc se ensancha.
           Sube N: la suma (azul) copia mejor al pulso (gris).
         </p>
+      </section>
+
+      <!-- 8. Problema 2: pulso de 0 a 2 -->
+      <section>
+        <h3>Problema 2: pulso de 0 a 2</h3>
+        <p style="font-size:0.55em">Pulso de altura 1, desde $t=0$ hasta $t=2$. Ya no está centrado.</p>
+        <div class="dos-col">
+          <div style="font-size:0.48em">
+            <div class="fragment">
+              $$c_k=\frac{1}{T_0}\int_{0}^{2}e^{-j2\pi k f_0 t}\,dt$$
+            </div>
+            <div class="fragment">
+              $$c_k=\frac{1}{T_0}\cdot\frac{e^{-j4\pi k f_0}-1}{-j2\pi k f_0}$$
+            </div>
+            <div class="fragment">
+              <p class="paso">El truco: sacar factor común para que aparezca un seno.</p>
+              $$e^{-j4\pi k f_0}-1=e^{-j2\pi k f_0}\left(e^{-j2\pi k f_0}-e^{j2\pi k f_0}\right)$$
+            </div>
+            <div class="fragment">
+              $$c_k=\frac{e^{-j2\pi k f_0}}{T_0}\cdot\frac{e^{-j2\pi k f_0}-e^{j2\pi k f_0}}{-j2\pi k f_0}$$
+            </div>
+            <div class="fragment">
+              $$c_k=\frac{e^{-j2\pi k f_0}}{T_0\,\pi k f_0}\,\sin(2\pi k f_0)$$
+            </div>
+            <div class="fragment">
+              <p class="paso">Resultado: el mismo sinc de antes, más una exponencial.</p>
+              $$\boxed{c_k=\frac{2}{T_0}\,\mathrm{sinc}(2kf_0)\,e^{-j2\pi k f_0}}$$
+            </div>
+          </div>
+          <div>
+            <div class="control">Periodo T<sub>0</sub> = <b id="p2_T0_txt">4</b> s
+              <input id="p2_T0" type="range" min="2.5" max="8" step="0.5" value="4"></div>
+            <div class="caja-grafica"><canvas id="p2_graf"></canvas></div>
+            <p class="nota">La señal x(t): un pulso de altura 1 entre 0 y 2.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. Forma simplificada -->
+      <section>
+        <h3>Forma simplificada</h3>
+        <p style="font-size:0.55em">
+          $$C_k=\frac{A\,\tau}{T_0}\,\mathrm{sinc}(k f_0 \tau)\,e^{-j2\pi k f_0 t_c}$$</p>
+        <p style="font-size:0.42em; margin:0">
+          $t_c$ es el centro del pulso. Aquí $A=1$, $\tau=2$, $T_0=4$.</p>
+        <div class="control">Centro del pulso t<sub>c</sub> = <b id="g9_tc_txt">1</b> s
+          <input id="g9_tc" type="range" min="-1" max="3" step="0.25" value="1"></div>
+        <div class="tres-col">
+          <div><p class="titulo-g">Señal x(t)</p>
+            <div class="caja-grafica"><canvas id="g9_pulso"></canvas></div></div>
+          <div><p class="titulo-g">Magnitud |C<sub>k</sub>|</p>
+            <div class="caja-grafica"><canvas id="g9_mag"></canvas></div></div>
+          <div><p class="titulo-g">Fase de C<sub>k</sub> (radianes)</p>
+            <div class="caja-grafica"><canvas id="g9_fase"></canvas></div></div>
+        </div>
+        <p class="nota">Las barras de magnitud no se mueven. Solo cambia la fase. Con t<sub>c</sub> = 1 es el Problema 2.</p>
+      </section>
+
+
+      <!-- 10. Problema final: suma de cosenos -->
+      <section>
+        <h3>Problema final: suma de cosenos</h3>
+        <p style="font-size:0.55em; margin:0">$$x(t)=3+2\cos(4\pi t)+3\cos(6\pi t)$$</p>
+        <div class="control c3">
+          <label>Constante = <b id="c_a0_txt">3</b>
+            <input id="c_a0" type="range" min="0" max="5" step="0.5" value="3"></label>
+          <label>Coseno de 2 Hz: amplitud = <b id="c_a2_txt">2</b>
+            <input id="c_a2" type="range" min="0" max="5" step="0.5" value="2"></label>
+          <label>Coseno de 3 Hz: amplitud = <b id="c_a3_txt">3</b>
+            <input id="c_a3" type="range" min="0" max="5" step="0.5" value="3"></label>
+        </div>
+        <div class="dos-col">
+          <div style="font-size:0.48em">
+            <div class="fragment">
+              <p class="paso">Cada coseno se escribe con dos exponenciales:</p>
+              $$\cos\theta=\frac{e^{j\theta}+e^{-j\theta}}{2}$$
+            </div>
+            <div class="fragment">
+              $$x(t)=3+\left(e^{j4\pi t}+e^{-j4\pi t}\right)+\tfrac{3}{2}\left(e^{j6\pi t}+e^{-j6\pi t}\right)$$
+            </div>
+            <div class="fragment">
+              <p class="paso">Las frecuencias son 2 Hz y 3 Hz, así que $f_0=1$ Hz y $4\pi t=2\pi(2)t$:</p>
+              $$\begin{aligned}x(t)={}&3+e^{j2\pi(2)t}+e^{-j2\pi(2)t}\\&+\tfrac{3}{2}e^{j2\pi(3)t}+\tfrac{3}{2}e^{-j2\pi(3)t}\end{aligned}$$
+            </div>
+            <div class="fragment">
+              <p class="paso">Comparamos con la serie y leemos los coeficientes:</p>
+              $$\boxed{c_0=3,\quad c_{\pm2}=1,\quad c_{\pm3}=\tfrac{3}{2}}$$
+            </div>
+            <p class="nota">El desarrollo es para 3, 2 y 3. Mueve los deslizadores para ver cómo cambia el espectro.</p>
+          </div>
+          <div>
+            <p class="titulo-g">Señal x(t)</p>
+            <div class="caja-grafica media"><canvas id="c_senal"></canvas></div>
+            <p class="titulo-g" style="margin-top:8px">Espectro de líneas |c<sub>k</sub>|</p>
+            <div class="caja-grafica media"><canvas id="c_espectro"></canvas></div>
+          </div>
+        </div>
       </section>
 
     </div>
@@ -122,56 +258,13 @@
       plugins: [ RevealMath.KaTeX ],
       katex: { local: 'lib/katex' }
     });
-
-    // --- Diapositiva 4: onda cuadrada armada con senos ---
-    const puntos = 400;
-    const tiempos = [];
-    for (let i = 0; i < puntos; i++) {
-      tiempos.push(-2 + 4 * i / (puntos - 1));
-    }
-
-    function sumaArmonicos(N) {
-      return tiempos.map(t => {
-        let s = 0;
-        for (let k = 1; k <= N; k += 2) {
-          s += Math.sin(k * Math.PI * t) / k;
-        }
-        return (4 / Math.PI) * s;
-      });
-    }
-
-    const grafica = new Chart(document.getElementById('grafica'), {
-      type: 'line',
-      data: {
-        labels: tiempos.map(t => t.toFixed(2)),
-        datasets: [{
-          label: 'Suma de armónicos',
-          data: sumaArmonicos(1),
-          borderColor: '#42affa',
-          borderWidth: 2,
-          pointRadius: 0
-        }]
-      },
-      options: {
-        maintainAspectRatio: false,
-        animation: false,
-        scales: {
-          x: { ticks: { maxTicksLimit: 9, color: '#ccc' } },
-          y: { min: -1.5, max: 1.5, ticks: { color: '#ccc' } }
-        },
-        plugins: { legend: { labels: { color: '#ccc' } } }
-      }
-    });
-
-    document.getElementById('deslizador').addEventListener('input', e => {
-      const N = parseInt(e.target.value);
-      document.getElementById('textoN').textContent = 'N = ' + N;
-      grafica.data.datasets[0].data = sumaArmonicos(N);
-      grafica.update();
-    });
   </script>
 
-  <!-- Diapositiva 5 (debe ir DESPUÉS del Reveal.initialize de arriba) -->
-  <script src="js/pulso.js"></script>
+  <!-- Scripts propios (el orden importa: comun.js va primero) -->
+  <script src="scripts/comun.js"></script>
+  <script src="scripts/suma-armonicos.js"></script>
+  <script src="scripts/problemas.js"></script>
+  <script src="scripts/tren-pulsos.js"></script>
+  <script src="scripts/cosenos.js"></script>
 </body>
 </html>

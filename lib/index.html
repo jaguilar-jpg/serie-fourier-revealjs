@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Serie de Fourier</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="reveal/dist/reset.css">
+  <link rel="stylesheet" href="reveal/dist/reveal.css">
+  <link rel="stylesheet" href="reveal/dist/theme/black.css">
+  <link rel="stylesheet" href="lib/katex/dist/katex.min.css">
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 1. Portada -->
+      <section>
+        <h1>Serie de Fourier</h1>
+        <p class="chico">Señales y Sistemas &middot; UNSA</p>
+        <p class="chico gris">Integrantes: (escribe aquí los nombres del grupo)</p>
+      </section>
+
+      <!-- 2. Tres formas de la serie -->
+      <section>
+        <h3>Tres formas de escribir la serie</h3>
+        <p class="chico">
+          Una señal periódica $x(t)$ de periodo $T_0$, con $f_0=1/T_0$,
+          se arma con ondas de frecuencia $n f_0$.
+        </p>
+        <div class="formulas">
+          <div class="fragment"><b>Con senos y cosenos</b>
+            $$x(t)=a_0+\sum_{n=1}^{\infty}\Big[a_n\cos(2\pi n f_0 t)+b_n\sin(2\pi n f_0 t)\Big]$$</div>
+          <div class="fragment"><b>Con amplitud y fase</b>
+            $$x(t)=A_0+\sum_{n=1}^{\infty}A_n\cos(2\pi n f_0 t+\phi_n)$$</div>
+          <div class="fragment"><b>Con exponenciales</b>
+            $$x(t)=\sum_{n=-\infty}^{\infty}c_n\,e^{j2\pi n f_0 t}$$</div>
+        </div>
+      </section>
+
+      <!-- 3. Cómo se calcula c_n -->
+      <section>
+        <h3>¿Cómo se calcula $c_n$?</h3>
+        <div class="formulas">
+          $$c_n=\frac{1}{T_0}\int_{T_0}x(t)\,e^{-j2\pi n f_0 t}\,dt$$
+          <ul class="lista">
+            <li class="fragment">Se integra en un solo periodo de la señal.</li>
+            <li class="fragment">$c_0$ es el promedio de la señal.</li>
+            <li class="fragment">El tamaño de $c_n$ dice cuánto hay de la onda número $n$, y su ángulo dice cuánto está corrida.</li>
+            <li class="fragment">Si $x(t)$ es real, $c_{-n}=c_n^{*}$: por eso el espectro es simétrico.</li>
+            <li class="fragment">Relación con las otras formas ($n\ge1$): $c_n=\dfrac{a_n-jb_n}{2}=\dfrac{A_n}{2}\,e^{j\phi_n}$</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 4. Sumando armónicos -->
+      <section id="diapo-armonicos">
+        <h3>Sumando armónicos: la idea de fondo</h3>
+        <p class="chico">Una onda cuadrada se forma sumando senos, uno por uno. Mira cómo la suma (azul) se pega a la cuadrada.</p>
+        <div class="controles c1">
+          <label>Senos sumados: <b id="a_txt">N = 1</b>
+            <input id="a_N" type="range" min="1" max="31" step="2" value="1"></label>
+        </div>
+        <div class="caja-grafica" style="height:400px"><canvas id="a_grafica"></canvas></div>
+        <p class="chico">Cada seno nuevo (naranja) es $\dfrac{4}{\pi n}\sin(n\pi t)$, con $n=1,3,5,\dots$</p>
+      </section>
+
+      <!-- 5. Problema 1 -->
+      <section>
+        <h3>Problema 1: pulso centrado</h3>
+        <p class="chico">Un pulso de altura $2$ entre $t=-1$ y $t=1$, que se repite cada $T_0$.</p>
+        <div class="dos-col">
+          <div class="formulas-chicas">
+            <div class="fragment">$$c_n=\frac{1}{T_0}\int_{-1}^{1}2\,e^{-j2\pi n f_0 t}\,dt$$</div>
+            <div class="fragment">$$c_n=\frac{2}{T_0}\left[\frac{e^{-j2\pi n f_0 t}}{-j2\pi n f_0}\right]_{-1}^{1}$$</div>
+            <div class="fragment">$$c_n=\frac{2}{T_0\,\pi n f_0}\cdot\frac{e^{j2\pi n f_0}-e^{-j2\pi n f_0}}{2j}$$</div>
+            <div class="fragment">$$c_n=\frac{2}{T_0\,\pi n f_0}\,\sin(2\pi n f_0)$$</div>
+            <div class="fragment">$$c_n=\frac{4}{T_0}\cdot\frac{\sin(2\pi n f_0)}{2\pi n f_0}=\frac{4}{T_0}\,\mathrm{sinc}(2nf_0)$$</div>
+          </div>
+          <div>
+            <div class="fig" id="fig_p1"></div>
+            <p class="nota fragment">Usamos $\mathrm{sinc}(x)=\dfrac{\sin(\pi x)}{\pi x}$. Para $n=0$ el resultado es $c_0=4/T_0$: el promedio.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Pulso general y el sinc -->
+      <section id="diapo-sinc">
+        <h3>Pulso general y la función sinc</h3>
+        <div class="dos-col igual">
+          <div class="formulas-chicas">
+            <p class="chico izq">Con altura $A$ y ancho $\tau$, centrado en $0$, el mismo cálculo da:</p>
+            <div class="fragment">$$c_n=\frac{A\,\tau}{T_0}\,\mathrm{sinc}(n f_0\,\tau)$$</div>
+            <ul class="lista">
+              <li class="fragment">$\mathrm{sinc}(x)=\dfrac{\sin(\pi x)}{\pi x}$, con $\mathrm{sinc}(0)=1$.</li>
+              <li class="fragment">Vale cero en $x=\pm1,\pm2,\pm3,\dots$</li>
+              <li class="fragment">Por eso $c_0=\dfrac{A\tau}{T_0}$: el promedio del pulso.</li>
+              <li class="fragment">Comprobación: $A=2$, $\tau=2$ da $\dfrac{4}{T_0}\mathrm{sinc}(2nf_0)$, el Problema 1.</li>
+            </ul>
+          </div>
+          <div class="caja-grafica" style="height:430px"><canvas id="s_grafica"></canvas></div>
+        </div>
+      </section>
+
+      <!-- 7. Tren de pulsos interactivo -->
+      <section id="diapo-tren">
+        <h3>Tren de pulsos: muévelo tú</h3>
+        <div class="formulas-chicas" style="margin:0">
+          $$c_n=\frac{A\,\tau}{T_0}\,\mathrm{sinc}(n f_0\,\tau),\qquad f_0=\frac{1}{T_0}$$
+        </div>
+        <div class="controles c4">
+          <label>Altura $A$ = <b id="p_A_txt">3</b>
+            <input id="p_A" type="range" min="1" max="5" step="0.5" value="3"></label>
+          <label>Ancho $\tau$ = <b id="p_tau_txt">1</b> s
+            <input id="p_tau" type="range" min="0.5" max="4" step="0.5" value="1"></label>
+          <label>Periodo $T_0$ = <b id="p_T0_txt">4</b> s
+            <input id="p_T0" type="range" min="2" max="10" step="0.5" value="4"></label>
+          <label>Armónicos $N$ = <b id="p_N_txt">7</b>
+            <input id="p_N" type="range" min="1" max="60" step="1" value="7"></label>
+        </div>
+        <div class="dos-col igual">
+          <div class="caja-grafica" style="height:320px"><canvas id="p_tiempo"></canvas></div>
+          <div class="caja-grafica" style="height:320px"><canvas id="p_espectro"></canvas></div>
+        </div>
+        <p class="info" id="p_info"></p>
+        <p class="nota fragment">Sube $T_0$: las líneas se juntan. Baja $\tau$: la envolvente se ensancha.
+          Sube $N$: la suma (azul) copia mejor al pulso (gris).</p>
+      </section>
+
+      <!-- 8. Problema 2 -->
+      <section>
+        <h3>Problema 2: pulso de 0 a 2</h3>
+        <p class="chico">Un pulso de altura $1$ entre $t=0$ y $t=2$. Ahora no es simétrico, y aparece un truco.</p>
+        <div class="dos-col">
+          <div class="formulas-chicas">
+            <div class="fragment">$$c_n=\frac{1}{T_0}\int_{0}^{2}e^{-j2\pi n f_0 t}\,dt=\frac{1}{T_0}\cdot\frac{e^{-j4\pi n f_0}-1}{-j2\pi n f_0}$$</div>
+            <div class="fragment"><span class="naranja"><b>Truco:</b></span> sacamos factor común $e^{-j2\pi n f_0}$ para que aparezca un seno
+              $$e^{-j4\pi n f_0}-1=e^{-j2\pi n f_0}\left(e^{-j2\pi n f_0}-e^{j2\pi n f_0}\right)$$</div>
+            <div class="fragment">$$c_n=\frac{e^{-j2\pi n f_0}}{T_0}\cdot\frac{e^{j2\pi n f_0}-e^{-j2\pi n f_0}}{j2\pi n f_0}$$</div>
+            <div class="fragment">$$c_n=\frac{e^{-j2\pi n f_0}}{T_0}\cdot\frac{2\sin(2\pi n f_0)}{2\pi n f_0}=\frac{2}{T_0}\,\mathrm{sinc}(2nf_0)\;e^{-j2\pi n f_0}$$</div>
+          </div>
+          <div>
+            <div class="fig" id="fig_p2"></div>
+            <p class="nota fragment">Es el mismo sinc del pulso centrado, pero con un factor extra $e^{-j2\pi n f_0}$.
+              ¿De dónde sale? De que el pulso está corrido.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. Forma simplificada -->
+      <section id="diapo-desplazado">
+        <h3>Forma simplificada: el centro del pulso</h3>
+        <div class="formulas-chicas" style="margin:0">
+          $$c_n=\frac{A\,\tau}{T_0}\,\mathrm{sinc}(n f_0\,\tau)\;e^{-j2\pi n f_0\,t_c}\qquad(t_c=\text{centro del pulso})$$
+        </div>
+        <p class="chico">Problema 2: $A=1$, $\tau=2$, $t_c=1$ &rarr; $\dfrac{2}{T_0}\mathrm{sinc}(2nf_0)\,e^{-j2\pi n f_0}$ &check;</p>
+        <div class="controles c1">
+          <label>El pulso empieza en $t=$ <b id="d_txt">0</b> s
+            <input id="d_in" type="range" min="-1" max="2" step="0.25" value="0"></label>
+        </div>
+        <div class="dos-col igual">
+          <div class="caja-grafica" style="height:350px"><canvas id="d_tiempo"></canvas></div>
+          <div>
+            <div class="caja-grafica" style="height:170px"><canvas id="d_mag"></canvas></div>
+            <div class="caja-grafica" style="height:170px; margin-top:10px"><canvas id="d_fase"></canvas></div>
+          </div>
+        </div>
+        <p class="info" id="d_info"></p>
+      </section>
+
+      <!-- 10. Problema 3: dos alturas -->
+      <section id="diapo-escalera">
+        <h3>Problema 3: dos alturas</h3>
+        <p class="chico">Altura $2$ entre $0$ y $1$, y altura $1$ entre $1$ y $2$ ($T_0=4$). Se toma un área y luego la otra; cada una es un pulso de ancho $\tau=1$.</p>
+        <div class="formulas-chicas">
+          <div class="fragment">$$c_n=\frac{1}{T_0}\left[\int_{0}^{1}2\,e^{-j2\pi n f_0 t}dt+\int_{1}^{2}1\,e^{-j2\pi n f_0 t}dt\right]$$</div>
+          <div class="fragment">$$c_n=\frac{2\cdot1}{T_0}\mathrm{sinc}(nf_0)\,e^{-j2\pi nf_0\left(\frac12\right)}+\frac{1\cdot1}{T_0}\mathrm{sinc}(nf_0)\,e^{-j2\pi nf_0\left(\frac32\right)}$$</div>
+          <div class="fragment">$$c_n=\frac{1}{4}\,\mathrm{sinc}\!\left(\frac n4\right)\left[2\,e^{-j\pi n/4}+e^{-j3\pi n/4}\right]\qquad(T_0=4,\ f_0=\tfrac14)$$</div>
+        </div>
+        <div class="controles c1">
+          <label>Armónicos $N$ = <b id="e_N_txt">5</b>
+            <input id="e_N" type="range" min="1" max="40" step="1" value="5"></label>
+        </div>
+        <div class="dos-col igual">
+          <div class="caja-grafica" style="height:235px"><canvas id="e_tiempo"></canvas></div>
+          <div class="caja-grafica" style="height:235px"><canvas id="e_espectro"></canvas></div>
+        </div>
+        <p class="info" id="e_info"></p>
+      </section>
+
+      <!-- 11. Techo de casa -->
+      <section id="diapo-techo">
+        <h3>&ldquo;Techo de casa&rdquo;: el triángulo</h3>
+        <div class="dos-col ancha-der">
+          <div class="formulas-chicas">
+            <p class="chico izq">Triángulo de altura $A$ y base $T$. Integrarlo a mano es largo; existe una fórmula directa:</p>
+            <div class="fragment">$$X(f)=\frac{A\,T}{2}\,\mathrm{sinc}^2\!\left(\frac{fT}{2}\right)$$</div>
+            <p class="chico izq fragment">Esa es la fórmula de un solo techo. Si se repite cada $T_0$, los coeficientes son sus valores en $f=nf_0$:</p>
+            <div class="fragment">$$c_n=\frac{1}{T_0}\,X(nf_0)=\frac{A\,T}{2T_0}\,\mathrm{sinc}^2\!\left(\frac{n f_0 T}{2}\right)$$</div>
+            <p class="nota fragment">Idea: el techo sale de combinar dos rectángulos de ancho $T/2$, por eso su espectro es el de un rectángulo, al cuadrado.</p>
+          </div>
+          <div>
+            <div class="controles c2">
+              <label>Altura $A$ = <b id="t_A_txt">2</b>
+                <input id="t_A" type="range" min="1" max="5" step="0.5" value="2"></label>
+              <label>Base $T$ = <b id="t_T_txt">2</b> s
+                <input id="t_T" type="range" min="1" max="6" step="0.5" value="2"></label>
+              <label>Periodo $T_0$ = <b id="t_T0_txt">4</b> s
+                <input id="t_T0" type="range" min="2" max="10" step="0.5" value="4"></label>
+              <label>Armónicos $N$ = <b id="t_N_txt">5</b>
+                <input id="t_N" type="range" min="1" max="40" step="1" value="5"></label>
+            </div>
+            <div class="caja-grafica" style="height:195px"><canvas id="t_tiempo"></canvas></div>
+            <div class="caja-grafica" style="height:195px; margin-top:8px"><canvas id="t_espectro"></canvas></div>
+            <p class="info" id="t_info"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12. Problema 4: la rampa -->
+      <section id="diapo-rampa">
+        <h3>Problema 4: la rampa</h3>
+        <p class="chico">$x(t)=t$ entre $-1$ y $1$, repetida cada $T_0$. Aquí hay que integrar por partes.</p>
+        <div class="dos-col ancha-der">
+          <div class="formulas-chicas">
+            <div class="fragment">$$c_n=\frac{1}{T_0}\int_{-1}^{1}t\,e^{-j2\pi n f_0 t}\,dt$$</div>
+            <div class="fragment">Con $a=2\pi n f_0$, $u=t$ y $dv=e^{-jat}dt$:
+              $$\begin{aligned}\int t\,e^{-jat}dt&=\frac{t\,e^{-jat}}{-ja}-\int\frac{e^{-jat}}{-ja}\,dt\\&=\frac{e^{-jat}\,(1+jat)}{a^2}\end{aligned}$$</div>
+            <div class="fragment">$$c_n=\frac{1}{T_0}\cdot\frac{e^{-ja}(1+ja)-e^{ja}(1-ja)}{a^2}$$</div>
+            <div class="fragment">$$c_n=\frac{2j}{T_0}\cdot\frac{a\cos a-\sin a}{a^2}\qquad(n\neq0)$$</div>
+            <p class="nota fragment">Para $n=0$: $c_0=0$ (la señal es impar y su promedio es cero).</p>
+          </div>
+          <div>
+            <div class="controles c2">
+              <label>Periodo $T_0$ = <b id="r_T0_txt">4</b> s
+                <input id="r_T0" type="range" min="2" max="8" step="0.5" value="4"></label>
+              <label>Armónicos $N$ = <b id="r_N_txt">8</b>
+                <input id="r_N" type="range" min="1" max="60" step="1" value="8"></label>
+            </div>
+            <div class="caja-grafica" style="height:225px"><canvas id="r_tiempo"></canvas></div>
+            <div class="caja-grafica" style="height:215px; margin-top:8px"><canvas id="r_espectro"></canvas></div>
+            <p class="info" id="r_info"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 13. Problema 5: senos y cosenos -->
+      <section>
+        <h3>Problema 5: senos y cosenos</h3>
+        <p class="chico">Escribir con exponenciales: $x(t)=3+2\cos(4\pi t)+3\cos(6\pi t)$. Aquí no hay que integrar.</p>
+        <div class="formulas">
+          <div class="fragment">Como $4\pi t=2\pi(2)t$ y $6\pi t=2\pi(3)t$, tenemos $f_0=1$ Hz, y usamos $\cos\theta=\dfrac{e^{j\theta}+e^{-j\theta}}{2}$:</div>
+          <div class="fragment">$$2\cos(4\pi t)=e^{j2\pi(2)t}+e^{j2\pi(-2)t}\qquad 3\cos(6\pi t)=\tfrac32\,e^{j2\pi(3)t}+\tfrac32\,e^{j2\pi(-3)t}$$</div>
+          <div class="fragment">$$x(t)=3+e^{j2\pi(2)t}+e^{j2\pi(-2)t}+\tfrac32\,e^{j2\pi(3)t}+\tfrac32\,e^{j2\pi(-3)t}$$</div>
+          <div class="fragment">Cada exponencial es $c_n\,e^{j2\pi n t}$, así que solo se leen los números:
+            $$c_0=3,\qquad c_2=c_{-2}=1,\qquad c_3=c_{-3}=\tfrac32$$</div>
+        </div>
+      </section>
+
+      <!-- 14. Espectro de líneas -->
+      <section id="diapo-espectro">
+        <h3>El espectro de líneas</h3>
+        <p class="chico">Las barras son los $c_n$ del problema anterior. Quita o pon componentes y mira cómo cambia $x(t)$.</p>
+        <div class="controles c3">
+          <label><input type="checkbox" id="x_n0" checked> Promedio $c_0=3$</label>
+          <label><input type="checkbox" id="x_n2" checked> $n=\pm2$ ($c=1$)</label>
+          <label><input type="checkbox" id="x_n3" checked> $n=\pm3$ ($c=3/2$)</label>
+        </div>
+        <div class="dos-col igual">
+          <div class="caja-grafica" style="height:380px"><canvas id="x_espectro"></canvas></div>
+          <div class="caja-grafica" style="height:380px"><canvas id="x_tiempo"></canvas></div>
+        </div>
+        <p class="nota">Cada par $\pm n$ aporta un coseno de amplitud $2c_n$: por eso $2\cos(4\pi t)$ y $3\cos(6\pi t)$.</p>
+      </section>
+
+      <!-- 15. Cierre -->
+      <section id="diapo-cierre">
+        <h3>Cierre: un puente hacia la transformada</h3>
+        <div class="dos-col">
+          <div>
+            <div class="controles c1">
+              <label>Periodo $T_0$ = <b id="b_txt">4</b> s (el pulso mide 1 s)
+                <input id="b_T0" type="range" min="2" max="40" step="1" value="4"></label>
+            </div>
+            <div class="caja-grafica" style="height:175px"><canvas id="b_tiempo"></canvas></div>
+            <div class="caja-grafica" style="height:240px; margin-top:8px"><canvas id="b_espectro"></canvas></div>
+            <p class="info" id="b_info"></p>
+          </div>
+          <div class="formulas-chicas">
+            <p class="chico izq fragment">Con $T_0$ muy grande queda un solo pulso, y las líneas se pegan hasta formar una curva continua: la transformada de Fourier.
+              $$X(f)=\int_{-\infty}^{\infty}x(t)\,e^{-j2\pi f t}\,dt$$</p>
+            <p class="chico izq fragment"><b>Conclusiones</b></p>
+            <ul class="lista">
+              <li class="fragment">Una señal periódica es una suma de ondas; sus $c_n$ son el &ldquo;ingrediente&rdquo; de cada una.</li>
+              <li class="fragment">Pulso: $c_n=\frac{A\tau}{T_0}\mathrm{sinc}(nf_0\tau)\,e^{-j2\pi nf_0t_c}$. Moverlo solo cambia la fase.</li>
+              <li class="fragment">Varias áreas se suman; las rampas piden integrar por partes; el techo tiene fórmula directa.</li>
+              <li class="fragment">Con senos y cosenos no se integra: se leen los coeficientes.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="lib/chart.umd.js"></script>
+  <script src="reveal/dist/reveal.js"></script>
+  <script src="reveal/dist/plugin/math.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      width: 1100,
+      height: 700,
+      center: false,          // el contenido empieza arriba (evita texto borroso a medio píxel)
+      transition: 'fade',
+      slideNumber: 'c/t',
+      plugins: [ RevealMath.KaTeX ],
+      katex: { local: 'lib/katex' }
+    });
+
+    // Gráficas nítidas y con la misma tipografía
+    Chart.defaults.devicePixelRatio = 3;
+    Chart.defaults.color = '#ccc';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.15)';
+    Chart.defaults.font.size = 15;
+  </script>
+
+  <!-- Estos van DESPUÉS del bloque de arriba -->
+  <script src="js/comun.js"></script>
+  <script src="js/figuras.js"></script>
+  <script src="js/armonicos.js"></script>
+  <script src="js/sinc.js"></script>
+  <script src="js/tren_pulsos.js"></script>
+  <script src="js/desplazado.js"></script>
+  <script src="js/escalera.js"></script>
+  <script src="js/techo.js"></script>
+  <script src="js/rampa.js"></script>
+  <script src="js/espectro.js"></script>
+  <script src="js/cierre.js"></script>
+</body>
+</html>

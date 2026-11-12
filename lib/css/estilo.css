@@ -1,0 +1,57 @@
+/* css/estilo.css — estilos propios de la presentación (sobre el tema "black" de reveal.js) */
+
+.reveal { font-size: 40px; }
+
+.reveal h1, .reveal h2, .reveal h3 { text-transform: none; }
+.reveal h1 { font-size: 2.3em; margin-bottom: 0.2em; }
+.reveal h3 { font-size: 1.2em; margin: 0 0 6px 0; }
+
+/* Textos */
+.reveal .chico  { font-size: 0.55em; margin: 0.3em 0; }
+.reveal .gris   { color: #aaa; }
+.reveal .azul   { color: #42affa; }
+.reveal .naranja{ color: #ffb347; }
+.reveal .izq    { text-align: left; }
+
+/* Texto dentro de bloques de fórmulas: no se encoge dos veces */
+.reveal .formulas .chico, .reveal .formulas-chicas .chico { font-size: 1.05em; }
+.reveal .formulas .nota,  .reveal .formulas-chicas .nota  { font-size: 0.9em; }
+
+/* Fórmulas */
+.reveal .formulas       { font-size: 0.6em; }
+.reveal .formulas-chicas{ font-size: 0.52em; }
+.reveal .katex-display  { margin: 0.3em 0; }
+.reveal .formulas ul, .reveal .formulas-chicas ul,
+.reveal ul.lista { display: block; text-align: left; margin: 0.3em 0 0.3em 1em; }
+.reveal ul.lista li { margin: 0.25em 0; }
+
+/* Dos columnas: izquierda (desarrollo) y derecha (figura o gráfica) */
+.dos-col {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 24px;
+  align-items: start;
+  text-align: left;
+}
+.dos-col > * { min-width: 0; }
+.dos-col.igual { grid-template-columns: 1fr 1fr; }
+.dos-col.ancha-der { grid-template-columns: 0.85fr 1.15fr; }
+
+/* Gráficas */
+.caja-grafica { position: relative; width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+
+/* Controles (deslizadores) */
+.controles { display: grid; gap: 14px 22px; font-size: 0.42em; margin: 6px 0 8px 0; text-align: left; }
+.controles.c4 { grid-template-columns: repeat(4, 1fr); }
+.controles.c3 { grid-template-columns: repeat(3, 1fr); }
+.controles.c2 { grid-template-columns: repeat(2, 1fr); }
+.controles.c1 { grid-template-columns: 1fr; }
+.controles label { display: block; }
+.controles input[type=range] { width: 100%; margin-top: 4px; }
+.controles input[type=checkbox] { margin-right: 6px; transform: scale(1.3); }
+.controles b { color: #ffb347; }
+
+.info { font-size: 0.42em; color: #9ad; margin: 6px 0 0 0; text-align: left; }
+.nota { font-size: 0.45em; color: #bbb; margin: 8px 0 0 0; text-align: left; }
+.caja { border: 2px solid #42affa55; border-radius: 10px; padding: 6px 14px; background: #42affa14; }
